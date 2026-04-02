@@ -20,9 +20,11 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/voxel')
 // Routes
 const projectRoutes = require('./routes/projectRoutes');
 const authRoutes = require('./routes/authRoutes');
+const assetRoutes = require('./routes/assetRoutes');
 
 app.use('/api/projects', projectRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/assets', assetRoutes);
 
 // Health Check
 app.get('/health', (req, res) => res.json({ status: 'ok' }));

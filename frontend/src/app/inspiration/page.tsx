@@ -5,84 +5,13 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Hexagon, Maximize2, Heart, ArrowLeft, Filter, Sparkles } from 'lucide-react';
 
-const categories = [
-  'Light Mode', 'Dark Mode', '3D', 'Text', 'Mouse', 
-  'Dither', 'Blur', 'Light', 'Retro', 'Distortion', 
-  'Color', 'Generative'
-];
-
-
-
-const baseImages = [
-  '/inspiration/webgl_aurora_1775326125807.png',
-  '/inspiration/webgl_blob_1775325536778.png',
-  '/inspiration/webgl_chrome_1775326062174.png',
-  '/inspiration/webgl_crystal_1775326012130.png',
-  '/inspiration/webgl_fractal_1775325992464.png',
-  '/inspiration/webgl_geometric_1775326148216.png',
-  '/inspiration/webgl_glass_1775325568815.png',
-  '/inspiration/webgl_glitch_1775326163363.png',
-  '/inspiration/webgl_gradient_1775326079485.png',
-  '/inspiration/webgl_holographic_1775325584068.png',
-  '/inspiration/webgl_neon_1775325551608.png',
-  '/inspiration/webgl_orb_1775326180652.png',
-  '/inspiration/webgl_plasma_1775326027491.png',
-  '/inspiration/webgl_silk_1775326111101.png',
-  '/inspiration/webgl_smoke_1775326093229.png',
-  '/inspiration/webgl_wireframe_1775326045001.png'
-];
-
-// Generates 80 explicitly distinct items using local images + dynamic CSS hue shifting
-const inspirations = Array.from({ length: 80 }).map((_, i) => {
-  const category = categories[i % categories.length];
-
-  let title = '';
-  // Hardcode the first few items to match the vibe from the screenshot precisely
-  if (i === 0) title = 'Glitch Roman Statue';
-  else if (i === 1) title = 'Light Beam Streak';
-  else if (i === 2) title = 'Typography WebGL OSZ';
-  else if (i === 3) title = 'Monolith Rock Render';
-  else if (i === 4) title = 'Holographic Laptop';
-  else if (i === 5) title = 'Distorted Make Text';
-  else {
-    const modifiers = ['V1', 'Concept', 'Study', 'Experiment', 'UI', 'Shader', 'V2'];
-    title = `${category} ${modifiers[i % modifiers.length]}`;
-  }
-
-  let colSpan = 'col-span-1';
-  let rowSpan = 'row-span-1';
-  
-  if (i % 8 === 0) {
-    colSpan = 'col-span-1 md:col-span-2 lg:col-span-2';
-    rowSpan = 'row-span-1';
-  }
-
-  const authors = ['kevingrajeda', 'Ray Shih', 'Voxel Studio', 'UI Lab'];
-  const author = authors[i % authors.length];
-
-  // Dynamic css filters to ensure vast visual difference between instances of the same image
-  const hueShift = (i * 53) % 360;
-  const saturation = 100 + (i % 4) * 25; // 100 to 175%
-  const invertVal = i % 14 === 0 ? 100 : 0; // Invert colors entirely on some!
-
-  return {
-    id: i + 1,
-    title,
-    category,
-    author,
-    image: baseImages[i % baseImages.length],
-    cssFilter: `hue-rotate(${hueShift}deg) saturate(${saturation}%) invert(${invertVal}%)`,
-    likes: Math.floor(Math.random() * 800) + 12,
-    colSpan,
-    rowSpan
-  };
-});
+import { categories, inspirations, InspirationItem } from '../../data/inspirations';
 
 export default function InspirationPage() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   
   const filteredInspirations = activeCategory
-    ? inspirations.filter(item => item.category === activeCategory)
+    ? inspirations.filter((item: InspirationItem) => item.category === activeCategory)
     : inspirations;
 
   return (
@@ -126,7 +55,7 @@ export default function InspirationPage() {
 
         {/* Filters - Match screenshot UI exactly */}
         <div className="flex flex-wrap items-center justify-start gap-2 mb-8">
-          {categories.map((category) => (
+          {categories.map((category: string) => (
             <button
               key={category}
               onClick={() => setActiveCategory(category)}
@@ -152,10 +81,10 @@ export default function InspirationPage() {
         {/* Gallery Grid */}
         <motion.div 
           layout
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-[280px]"
+          className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-[240px] grid-flow-dense"
         >
           <AnimatePresence mode="popLayout">
-            {filteredInspirations.map((item) => (
+            {filteredInspirations.map((item: InspirationItem) => (
               <motion.div
                 key={item.id}
                 layout
@@ -163,7 +92,7 @@ export default function InspirationPage() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ duration: 0.4, type: "spring", bounce: 0.3 }}
-                className={`group relative rounded-3xl overflow-hidden bg-zinc-900 border border-white/5 ${item.colSpan} ${item.rowSpan}`}
+                className={`group relative rounded-[8px] overflow-hidden bg-zinc-900 border border-white/5 ${item.colSpan} ${item.rowSpan}`}
               >
                 {/* Background Image */}
                 <div className="absolute inset-0 z-0 bg-black">
@@ -171,32 +100,48 @@ export default function InspirationPage() {
                     src={item.image} 
                     alt={item.title} 
                     style={{ filter: item.cssFilter }}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110 opacity-90"
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 opacity-90"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 transition-opacity duration-300 group-hover:opacity-80 mix-blend-multiply" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 opacity-40 transition-opacity duration-300 group-hover:opacity-80" />
+                </div>
+
+                {/* Center Title */}
+                <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none p-6">
+                  {item.centerText ? (
+                    <h2 className="text-white/90 font-medium text-center text-lg md:text-xl whitespace-pre-line drop-shadow-md">
+                      {item.centerText}
+                    </h2>
+                  ) : (
+                    <h2 className="text-white font-medium text-center text-lg opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 drop-shadow-md">
+                      {item.title}
+                    </h2>
+                  )}
                 </div>
 
                 {/* Content Overlay */}
-                <div className="absolute inset-x-0 bottom-0 z-10 p-4 flex flex-col justify-end translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                  <div className="flex items-center justify-between mb-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <span className="px-2 py-1 bg-black/40 backdrop-blur-md rounded-[4px] text-[10px] font-medium text-white/90 border border-white/5 rounded-full">
+                <div className="absolute inset-0 z-20 p-4 flex flex-col justify-between">
+                  {/* Top Bar - Hidden by default, visible on hover */}
+                  <div className="flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <span className="px-2.5 py-1 bg-white/10 backdrop-blur-md rounded-[4px] text-[10px] uppercase tracking-wider font-semibold text-white/90">
                       {item.category}
                     </span>
-                    <button className="w-8 h-8 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white/20 hover:scale-110">
+                    <button className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center transition-all duration-300 hover:bg-white/20 hover:scale-105">
                       <Heart className="w-4 h-4 text-white" />
                     </button>
                   </div>
                   
-                  <h3 className="text-xl font-bold mb-1 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">{item.title}</h3>
-                  <div className="flex items-center justify-between text-xs text-white/60">
-                    <span className="translate-y-6 group-hover:translate-y-0 transition-transform duration-300">@{item.author.toLowerCase().replace(/\s+/g, '')}</span>
-                  </div>
+                  {/* Bottom Bar - Author (visible by default), Action (on hover) */}
+                  <div className="flex items-end justify-between mt-auto">
+                    {/* Author Name */}
+                    <div className="flex flex-col">
+                      <span className="text-[13px] font-medium text-white/70 drop-shadow-sm group-hover:text-white transition-colors duration-300">
+                        {item.author.startsWith('@') ? item.author : `@${item.author.toLowerCase().replace(/\s+/g, '')}`}
+                      </span>
+                    </div>
 
-                  {/* Actions (reveal on hover) */}
-                  <div className="grid grid-cols-2 gap-2 mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <button className="flex items-center justify-center gap-1.5 py-2 bg-white text-black rounded-[6px] text-xs font-bold hover:bg-zinc-200 transition-colors">
-                      <Hexagon className="w-3 h-3" fill="currentColor" />
-                      Remix
+                    {/* Copy Project Action */}
+                    <button className="px-3.5 py-1.5 bg-white text-black rounded-[6px] text-[13px] font-bold opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 hover:bg-zinc-200">
+                      Copy project
                     </button>
                   </div>
                 </div>

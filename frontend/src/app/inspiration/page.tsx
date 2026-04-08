@@ -5,14 +5,85 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Hexagon, Maximize2, Heart, ArrowLeft, Filter, Sparkles } from 'lucide-react';
 
-import { categories, inspirations, InspirationItem } from '../../data/inspirations';
+const categoryKeywords: Record<string, string[]> = {
+  Materials: ['3d', 'texture', 'render'],
+  Particles: ['neon', 'glitter', 'particles'],
+  Abstract: ['abstract', 'gradient', 'geometry'],
+  Distortion: ['glitch', 'cyberpunk', 'retro'],
+};
+
+// Generates 40 explicitly distinct items
+const inspirations = Array.from({ length: 40 }).map((_, i) => {
+  // Use specific user requested themes for the first 4 slots to guarantee they appear uniquely
+  let keyword = 'abstract,3d';
+  let title = 'Abstract WebGL ' + i;
+  let category = 'Abstract';
+
+  if (i === 0) {
+    title = 'Dark Mode Dashboard UI';
+    keyword = 'darkmode,ui,dashboard';
+    category = 'Abstract';
+  } else if (i === 1) {
+    title = 'Retro 80s Synthwave';
+    keyword = 'retro,synthwave,neon';
+    category = 'Distortion';
+  } else if (i === 2) {
+    title = '3D Shoe Configurator';
+    keyword = 'sneaker,3d,shoe';
+    category = 'Materials';
+  } else if (i === 3) {
+    title = 'Modern Website Graphic';
+    keyword = 'website,graphic,ui';
+    category = 'Abstract';
+  } else {
+    // Dynamically assign categories
+    const categoriesList = ['Materials', 'Particles', 'Abstract', 'Distortion'];
+    category = categoriesList[i % categoriesList.length];
+    
+    // Pick keyword for lorem flickr
+    const kwList = categoryKeywords[category];
+    keyword = kwList[(i * 3) % kwList.length] + ',3d';
+
+    const modifiers = ['V2', 'Remix', 'Dark Mode', 'Liquid', 'Quantum', 'Flow', 'Crystal', 'Neon', 'Holo'];
+    title = `${category} Concept - ${modifiers[i % modifiers.length]}`;
+  }
+
+  // Create variations in colSpan/rowSpan to make grid interesting
+  let colSpan = 'col-span-1 md:col-span-1 lg:col-span-1';
+  let rowSpan = 'row-span-1';
+  
+  if (i % 7 === 0) {
+    colSpan = 'col-span-1 md:col-span-2 lg:col-span-2';
+    rowSpan = 'row-span-2';
+  } else if (i % 5 === 0) {
+    colSpan = 'col-span-1 md:col-span-2 lg:col-span-2';
+    rowSpan = 'row-span-1';
+  }
+
+  const authors = ['Voxel Studio', 'UI Lab', 'Neon Dreams', 'CyberPunk99', 'GenArt', 'Lumina'];
+  const author = `${authors[i % authors.length]}${i % 3 === 0 && i !== 0 ? ' & Co.' : ''}`;
+  const likes = 200 + ((i * 137) % 1800);
+
+  return {
+    id: i + 1,
+    title,
+    category,
+    author,
+    image: `https://loremflickr.com/800/600/${keyword}?lock=${i + 130}`,
+    likes,
+    colSpan,
+    rowSpan
+  };
+});
+
+const categories = ['All', 'Materials', 'Particles', 'Abstract', 'Distortion'];
 
 export default function InspirationPage() {
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = useState('All');
   
-  const filteredInspirations = activeCategory
-    ? inspirations.filter((item: InspirationItem) => item.category === activeCategory)
-    : inspirations;
+  const filteredInspirations = activeCategory === 'All' 
+    ? inspirations 
+    : inspirations.filter(item => item.category === activeCategory);
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white font-geist-sans selection:bg-blue-500/30 selection:text-blue-200">
@@ -43,48 +114,68 @@ export default function InspirationPage() {
         </div>
       </nav>
 
-      <main className="relative z-10 mx-auto px-8 w-full max-w-[1600px] pt-12 pb-40">
+      <main className="relative z-10 max-w-7xl mx-auto px-8 pt-20 pb-40">
         
-        {/* Header - Left Aligned to match screenshot */}
-        <div className="flex flex-col items-start mb-8 text-left">
-          <h1 className="text-3xl font-bold mb-3 tracking-tight">Inspiration</h1>
-          <p className="text-sm text-zinc-400">
-            Explore effects in action and remix them for your own projects.
-          </p>
+        {/* Header */}
+        <div className="flex flex-col items-center mb-20 text-center">
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 mb-6"
+          >
+            <Sparkles className="w-4 h-4" />
+            <span className="text-xs font-bold uppercase tracking-widest">Showcase</span>
+          </motion.div>
+          
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-5xl md:text-7xl font-black tracking-tighter mb-6"
+          >
+            DISCOVER <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">INSPIRATION</span>
+          </motion.h1>
+          
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-lg text-white/40 max-w-2xl font-medium"
+          >
+            Explore incredible WebGL experiences built by the community. 
+            Clone them into your workspace to instantly kickstart your creative process.
+          </motion.p>
         </div>
 
-        {/* Filters - Match screenshot UI exactly */}
-        <div className="flex flex-wrap items-center justify-start gap-2 mb-8">
-          {categories.map((category: string) => (
+        {/* Filters */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="flex flex-wrap items-center justify-center gap-3 mb-16"
+        >
+          {categories.map((category) => (
             <button
               key={category}
               onClick={() => setActiveCategory(category)}
-              className={`px-3 py-1.5 rounded-[4px] text-[13px] transition-colors border ${
+              className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 ${
                 activeCategory === category 
-                  ? 'bg-indigo-500 border-indigo-500 text-white'
-                  : 'bg-transparent border-white/10 text-white/50 hover:text-white hover:border-white/30 hover:bg-white/5'
+                  ? 'bg-white text-black shadow-lg shadow-white/10 scale-105'
+                  : 'bg-white/5 text-white/50 hover:bg-white/10 hover:text-white border border-white/5 hover:border-white/20'
               }`}
             >
               {category}
             </button>
           ))}
-          {activeCategory && (
-            <button
-              onClick={() => setActiveCategory(null)}
-              className="px-3 py-1.5 rounded-[4px] text-[13px] transition-colors border bg-transparent border-white/10 text-white/50 hover:text-white hover:border-white/30 ml-2"
-            >
-              Clear filters
-            </button>
-          )}
-        </div>
+        </motion.div>
 
         {/* Gallery Grid */}
         <motion.div 
           layout
-          className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-[240px] grid-flow-dense"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[300px]"
         >
           <AnimatePresence mode="popLayout">
-            {filteredInspirations.map((item: InspirationItem) => (
+            {filteredInspirations.map((item) => (
               <motion.div
                 key={item.id}
                 layout
@@ -92,56 +183,44 @@ export default function InspirationPage() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ duration: 0.4, type: "spring", bounce: 0.3 }}
-                className={`group relative rounded-[8px] overflow-hidden bg-zinc-900 border border-white/5 ${item.colSpan} ${item.rowSpan}`}
+                className={`group relative rounded-3xl overflow-hidden bg-zinc-900 border border-white/5 ${item.colSpan} ${item.rowSpan}`}
               >
                 {/* Background Image */}
-                <div className="absolute inset-0 z-0 bg-black">
+                <div className="absolute inset-0 z-0">
                   <img 
                     src={item.image} 
                     alt={item.title} 
-                    style={{ filter: item.cssFilter }}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 opacity-90"
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 opacity-40 transition-opacity duration-300 group-hover:opacity-80" />
-                </div>
-
-                {/* Center Title */}
-                <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none p-6">
-                  {item.centerText ? (
-                    <h2 className="text-white/90 font-medium text-center text-lg md:text-xl whitespace-pre-line drop-shadow-md">
-                      {item.centerText}
-                    </h2>
-                  ) : (
-                    <h2 className="text-white font-medium text-center text-lg opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 drop-shadow-md">
-                      {item.title}
-                    </h2>
-                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 transition-opacity duration-300 group-hover:opacity-80" />
                 </div>
 
                 {/* Content Overlay */}
-                <div className="absolute inset-0 z-20 p-4 flex flex-col justify-between">
-                  {/* Top Bar - Hidden by default, visible on hover */}
-                  <div className="flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <span className="px-2.5 py-1 bg-white/10 backdrop-blur-md rounded-[4px] text-[10px] uppercase tracking-wider font-semibold text-white/90">
+                <div className="absolute inset-x-0 bottom-0 z-10 p-6 flex flex-col justify-end translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="px-3 py-1 bg-white/10 backdrop-blur-md rounded-full text-xs font-semibold text-white/90 border border-white/10">
                       {item.category}
                     </span>
-                    <button className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center transition-all duration-300 hover:bg-white/20 hover:scale-105">
+                    <button className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white/20 hover:scale-110">
                       <Heart className="w-4 h-4 text-white" />
                     </button>
                   </div>
                   
-                  {/* Bottom Bar - Author (visible by default), Action (on hover) */}
-                  <div className="flex items-end justify-between mt-auto">
-                    {/* Author Name */}
-                    <div className="flex flex-col">
-                      <span className="text-[13px] font-medium text-white/70 drop-shadow-sm group-hover:text-white transition-colors duration-300">
-                        {item.author.startsWith('@') ? item.author : `@${item.author.toLowerCase().replace(/\s+/g, '')}`}
-                      </span>
-                    </div>
+                  <h3 className="text-2xl font-bold mb-1 text-white">{item.title}</h3>
+                  <div className="flex items-center justify-between text-sm text-white/60">
+                    <span>By {item.author}</span>
+                    <span className="flex items-center gap-1"><Heart className="w-3 h-3 fill-white/50" /> {item.likes}</span>
+                  </div>
 
-                    {/* Copy Project Action */}
-                    <button className="px-3.5 py-1.5 bg-white text-black rounded-[6px] text-[13px] font-bold opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 hover:bg-zinc-200">
-                      Copy project
+                  {/* Actions (reveal on hover) */}
+                  <div className="grid grid-cols-2 gap-3 mt-6 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-4 group-hover:translate-y-0">
+                    <button className="flex items-center justify-center gap-2 py-3 bg-white text-black rounded-xl font-bold hover:bg-zinc-200 transition-colors">
+                      <Hexagon className="w-4 h-4" fill="currentColor" />
+                      Clone Project
+                    </button>
+                    <button className="flex items-center justify-center gap-2 py-3 bg-white/10 backdrop-blur-md border border-white/10 text-white rounded-xl font-bold hover:bg-white/20 transition-colors">
+                      <Maximize2 className="w-4 h-4" />
+                      Preview
                     </button>
                   </div>
                 </div>

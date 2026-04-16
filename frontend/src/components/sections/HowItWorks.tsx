@@ -1,49 +1,38 @@
 import { FadeUp } from "../ui/FadeUp";
+import { Badge } from "../ui/Badge";
+import { HOW_IT_WORKS } from "@/lib/copy";
 
 export function HowItWorks() {
-  const steps = [
-    {
-      number: "01",
-      title: "Open the canvas",
-      desc: "Start with a blank slate or drop in a base 3D model. The interface stays out of your way."
-    },
-    {
-      number: "02",
-      title: "Layer motion & effects",
-      desc: "Stack post-processing algorithms visually. Tweak values in real-time until it feels perfect."
-    },
-    {
-      number: "03",
-      title: "Export & embed",
-      desc: "Copy the runtime snippet or export a fully typed React component directly into your codebase."
-    }
-  ];
-
   return (
-    <section id="how-it-works" className="py-24 bg-zinc-950">
-      <div className="max-w-7xl mx-auto px-6 md:px-12">
+    <section id="how-it-works" className="py-24 md:py-32 bg-zinc-50 dark:bg-zinc-950 border-t border-zinc-200 dark:border-zinc-800/60 transition-colors duration-300">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <FadeUp>
-          <div className="mb-20 text-center">
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white mb-6">
-              From idea to live in minutes
+          <div className="mb-16 text-center">
+            <Badge variant="default" className="mb-6">
+              {HOW_IT_WORKS.LABEL}
+            </Badge>
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-zinc-950 dark:text-white">
+              {HOW_IT_WORKS.HEADING}
             </h2>
           </div>
         </FadeUp>
 
         <div className="relative">
           {/* Connector Line for Desktop */}
-          <div className="hidden md:block absolute top-[28px] left-[15%] right-[15%] h-[1px] bg-zinc-800" />
+          <div className="hidden lg:block absolute top-[16px] left-[15%] right-[15%] h-[1px] border-t border-dashed border-zinc-300 dark:border-zinc-700" />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
-            {steps.map((step, idx) => (
-              <FadeUp key={idx} delay={0.2 * idx} className="relative z-10 flex flex-col items-center text-center">
-                <div className="w-14 h-14 rounded-full bg-black border-2 border-zinc-800 flex items-center justify-center mb-8 text-lg font-bold text-white shadow-xl shadow-black">
-                  {step.number}
+          <div className="flex flex-col lg:flex-row gap-12 lg:gap-8 justify-between relative z-10">
+            {HOW_IT_WORKS.STEPS.map((step, idx) => (
+              <FadeUp key={idx} delay={idx * 0.08} className="flex-1 flex flex-col items-center lg:items-start text-center lg:text-left">
+                <div className="w-8 h-8 rounded-full bg-indigo-500 text-white flex items-center justify-center text-sm font-bold mb-6 ring-4 ring-zinc-50 dark:ring-zinc-950">
+                  {idx + 1}
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3">{step.title}</h3>
-                <p className="text-zinc-400 text-sm leading-relaxed max-w-[280px]">
-                  {step.desc}
-                </p>
+                <div className="space-y-3 px-4 lg:px-0">
+                  <h3 className="text-lg font-semibold text-zinc-950 dark:text-white">{step.title}</h3>
+                  <p className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed max-w-sm mx-auto lg:mx-0">
+                    {step.desc}
+                  </p>
+                </div>
               </FadeUp>
             ))}
           </div>

@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Hexagon } from "lucide-react";
+import { Button } from "../ui/Button";
+import { ThemeToggle } from "../ui/ThemeToggle";
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -17,40 +18,34 @@ export function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b ${
-        isScrolled
-          ? "bg-black/60 backdrop-blur-md border-white/10 py-4"
-          : "bg-transparent border-transparent py-6"
+      className={`sticky top-0 z-50 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md transition-colors duration-300 ${
+        isScrolled ? "border-b border-zinc-200 dark:border-zinc-800/60" : "border-b border-transparent"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center group-hover:bg-zinc-200 transition-colors">
-            <Hexagon className="w-5 h-5 text-black" fill="currentColor" />
-          </div>
-          <span className="text-xl font-bold tracking-tight text-white">Voxel</span>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        {/* Left: Logo */}
+        <Link href="/" className="flex items-center gap-2">
+          {/* Note: In PRD, Logo SVG wordmark or bold text "Voxel" in white */}
+          <span className="text-xl font-bold tracking-tight text-zinc-950 dark:text-white">Voxel</span>
         </Link>
 
-        {/* Center Links (Desktop) */}
-        <div className="hidden md:flex items-center gap-8">
-          <Link href="#features" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">Features</Link>
-          <Link href="#how-it-works" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">How it works</Link>
-          <Link href="#pricing" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">Pricing</Link>
-          <Link href="#changelog" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">Changelog</Link>
+        {/* Center: Links (Desktop) */}
+        <div className="hidden md:flex items-center gap-6">
+          <Link href="#features" className="text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition-colors">Features</Link>
+          <Link href="#how-it-works" className="text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition-colors">How it works</Link>
+          <Link href="#showcase" className="text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition-colors">Showcase</Link>
+          <Link href="#pricing" className="text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition-colors">Pricing</Link>
         </div>
 
-        {/* Action Button */}
-        <div className="flex items-center gap-4">
-          <Link href="/login" className="hidden sm:block text-sm font-medium text-zinc-400 hover:text-white transition-colors">
-            Log in
-          </Link>
-          <Link
-            href="/signup"
-            className="px-4 py-2 bg-white text-black text-sm font-semibold rounded-md hover:bg-zinc-200 transition-colors"
-          >
+        {/* Right: CTA group */}
+        <div className="flex items-center gap-3">
+          <ThemeToggle />
+          <Button variant="secondary" href="/login" className="hidden sm:inline-flex">
+            Sign in
+          </Button>
+          <Button variant="primary" href="/waitlist">
             Get early access
-          </Link>
+          </Button>
         </div>
       </div>
     </nav>

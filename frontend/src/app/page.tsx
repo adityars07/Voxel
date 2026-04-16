@@ -9,21 +9,20 @@ import { Pricing } from "@/components/sections/Pricing";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { FinalCta } from "@/components/sections/FinalCta";
 import { Footer } from "@/components/sections/Footer";
-
-export const COMING_SOON = true;
+import { SHOW_AI_FEATURE } from "@/lib/config";
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-black text-white selection:bg-blue-500/30 font-geist-sans">
+    <div className="bg-zinc-950 text-zinc-400 selection:bg-indigo-500/30 selection:text-white font-geist-sans">
       <Navbar />
       
       <main>
-        <Hero comingSoonAi={COMING_SOON} />
+        <Hero />
         <SocialProof />
-        <Features comingSoonAi={COMING_SOON} />
+        <Features />
         <HowItWorks />
         
-        {COMING_SOON && <AiTeaser />}
+        {SHOW_AI_FEATURE && <AiTeaser />}
         
         <Showcase />
         <Pricing />

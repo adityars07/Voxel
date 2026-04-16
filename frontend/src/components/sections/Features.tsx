@@ -1,81 +1,70 @@
 import { FadeUp } from "../ui/FadeUp";
-import { Copy, Cpu, Download, Layers, Palette, Sparkles } from "lucide-react";
+import { Badge } from "../ui/Badge";
+import { FEATURES_SECTION } from "@/lib/copy";
+import { SHOW_AI_FEATURE } from "@/lib/config";
+import { Layers, Sparkles, Zap, Code2, Gauge, Bot } from "lucide-react";
 
-interface FeaturesProps {
-  comingSoonAi: boolean;
-}
+const getIcon = (name: string) => {
+  const icons: Record<string, React.ReactNode> = {
+    Layers: <Layers className="w-5 h-5" />,
+    Sparkles: <Sparkles className="w-5 h-5" />,
+    Zap: <Zap className="w-5 h-5" />,
+    Code2: <Code2 className="w-5 h-5" />,
+    Gauge: <Gauge className="w-5 h-5" />,
+    Bot: <Bot className="w-5 h-5" />
+  };
+  return icons[name] || <Layers className="w-5 h-5" />;
+};
 
-export function Features({ comingSoonAi }: FeaturesProps) {
-  const features = [
-    {
-      icon: <Palette className="w-5 h-5 text-blue-500" />,
-      title: "No-code WebGL effects",
-      desc: "Create particle systems, fluid simulations, and post-processing effects without writing a single line of shader code."
-    },
-    {
-      icon: <Layers className="w-5 h-5 text-blue-500" />,
-      title: "Layer-based canvas",
-      desc: "Familiar Figma-like interface. Organize your scene, adjust blending modes, and stack modifiers effortlessly."
-    },
-    {
-      icon: <Download className="w-5 h-5 text-blue-500" />,
-      title: "Export anywhere",
-      desc: "Export standalone components to React, Framer, Webflow, or directly drop in plain HTML/JS."
-    },
-    {
-      icon: <Copy className="w-5 h-5 text-blue-500" />,
-      title: "35+ built-in effects",
-      desc: "From chromatic depths to volumetric lighting—start with our library of production-ready presets."
-    },
-    {
-      icon: <Cpu className="w-5 h-5 text-blue-500" />,
-      title: "Lightweight runtime",
-      desc: "Our embeddable engine is heavily optimized. Zero bloated dependencies footprint on your precious page load."
-    }
-  ];
-
+export function Features() {
   return (
-    <section id="features" className="py-24 bg-black relative">
-      <div className="max-w-7xl mx-auto px-6 md:px-12">
+    <section id="features" className="py-24 md:py-32 bg-white dark:bg-zinc-950 transition-colors duration-300">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <FadeUp>
-          <div className="max-w-2xl mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white mb-6">
-              Everything you need to build stunning web visuals
+          <div className="max-w-2xl mb-12">
+            <Badge variant="default" className="mb-6">
+              {FEATURES_SECTION.LABEL}
+            </Badge>
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-zinc-950 dark:text-white mb-4">
+              {FEATURES_SECTION.HEADING}
             </h2>
-            <p className="text-lg text-zinc-400">
-              Stop fighting with boilerplate. Start shaping ideas visually.
+            <p className="text-base md:text-lg text-zinc-500 dark:text-zinc-400 leading-relaxed">
+              {FEATURES_SECTION.SUBHEADING}
             </p>
           </div>
         </FadeUp>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {features.map((item, idx) => (
-            <FadeUp key={idx} delay={0.1 * (idx + 1)}>
-              <div className="p-8 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-zinc-700 transition-colors h-full">
-                <div className="w-10 h-10 rounded-lg bg-black border border-zinc-800 flex items-center justify-center mb-6">
-                  {item.icon}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+          {FEATURES_SECTION.ITEMS.map((item, idx) => (
+            <FadeUp key={idx} delay={idx * 0.08}>
+              <div className="bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors duration-200 h-full flex flex-col space-y-3">
+                <div className="text-zinc-500 dark:text-zinc-400 mb-3">
+                  {getIcon(item.icon)}
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">{item.title}</h3>
-                <p className="text-zinc-400 leading-relaxed text-sm">
+                <h3 className="text-lg font-semibold text-zinc-950 dark:text-white">
+                  {item.title}
+                </h3>
+                <p className="text-sm text-zinc-500 dark:text-zinc-400 flex-1">
                   {item.desc}
                 </p>
               </div>
             </FadeUp>
           ))}
 
-          {/* AI Feature block */}
-          {comingSoonAi && (
-            <FadeUp delay={0.6}>
-              <div className="p-8 rounded-2xl bg-blue-500/5 border border-blue-500/20 hover:border-blue-500/40 transition-colors h-full relative overflow-hidden group">
-                <div className="absolute top-4 right-4 bg-blue-500/10 text-blue-400 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded">
-                  Coming Soon
+          {SHOW_AI_FEATURE && (
+            <FadeUp delay={FEATURES_SECTION.ITEMS.length * 0.08}>
+              <div className="bg-indigo-50/50 dark:bg-zinc-900 border border-indigo-200 dark:border-indigo-500/40 rounded-xl p-6 ring-1 ring-indigo-500/20 relative overflow-hidden h-full flex flex-col space-y-3">
+                <div className="absolute top-4 right-4">
+                  <Badge variant="accent">{FEATURES_SECTION.AI_FEATURE.badge}</Badge>
                 </div>
-                <div className="w-10 h-10 rounded-lg bg-black border border-zinc-800 group-hover:border-blue-500/50 transition-colors flex items-center justify-center mb-6">
-                  <Sparkles className="w-5 h-5 text-blue-500" />
+                <div className="text-indigo-500 dark:text-indigo-400 mb-3">
+                  {getIcon(FEATURES_SECTION.AI_FEATURE.icon)}
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">AI design generation</h3>
-                <p className="text-zinc-400 leading-relaxed text-sm">
-                  Describe what you want to see. Our custom LLM builds the node graph and configures the shader parameters automatically.
+                <h3 className="text-lg font-semibold text-zinc-950 dark:text-white">
+                  {FEATURES_SECTION.AI_FEATURE.title}
+                </h3>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400 flex-1 pr-12">
+                  {FEATURES_SECTION.AI_FEATURE.desc}
                 </p>
               </div>
             </FadeUp>
